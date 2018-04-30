@@ -41,7 +41,7 @@ void velCallback( const geometry_msgs::Twist& motion)
     }
     else
     {
-      //return steering wheel to middle if there's no command
+      //return throttle to zero if there's no command
       THROTTLE_CMD = THROTTLE_ZERO;
     }
 
