@@ -3,17 +3,17 @@
 #include <ros.h>
 #include <std_msgs/Int32.h>
 
-Servo steer_servo;  
 Servo throttle_servo; 
+Servo steer_servo;  
 
 ros::NodeHandle nh;
 
 int THROTTLE_CMD;
 int STEER_CMD;
 
-void velCallback(const std_msgs::Int32& vel)
+void throttleCallback(const std_msgs::Int32& throttle)
 {
-   THROTTLE_CMD = vel.data;
+   THROTTLE_CMD = throttle.data;
    throttle_servo.write(THROTTLE_CMD);
    delay(15);
 }
@@ -25,7 +25,7 @@ void steerCallback(const std_msgs::Int32& steer)
    delay(15);
 }
 
-ros::Subscriber<std_msgs::Int32> sub_speed("/rc_car/speedPWM" , velCallback);
+ros::Subscriber<std_msgs::Int32> sub_throttle("/rc_car/speedPWM" , throttleCallback);
 ros::Subscriber<std_msgs::Int32> sub_steer("/rc_car/steerPWM" , steerCallback);
 
 void setup() {
