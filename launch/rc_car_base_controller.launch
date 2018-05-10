@@ -1,0 +1,14 @@
+<launch>
+
+<node name="rc_car_base_controller" pkg="rc_car" type="rc_car_base_controller.py" output="screen" respawn="true">
+	<param name="throttle_max" type="double" value="130.0" />
+	<param name="throttle_min" type="double" value="60.0" />
+	<param name="throttle_zero" type="double" value="120.0" />
+	<param name="steering_max" type="double" value="144.0" />
+	<param name="steering_min" type="double" value="56.0" />
+	<param name="steering_zero" type="double" value="97.0" />
+</node>
+
+<node name="rc_car_ackermann" pkg="rc_car" type="cmd_vel_to_ackermann_drive.py" output="screen" respawn="true" />
+
+</launch>
