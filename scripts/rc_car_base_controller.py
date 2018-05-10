@@ -2,9 +2,12 @@
 
 import rospy
 from std_msgs.msg import Float32 
-from std_msgs.msg import Int32 
+from std_msgs.msg import Int32
+from geometry_msgs.msg import TwistStamped 
 from ackermann_msgs.msg import AckermannDriveStamped
 from math import pow, atan2, sqrt, sin, cos, radians
+import numpy as np
+
 
 speedometer = 0.0
 
@@ -50,6 +53,7 @@ def valmap(value, istart, istop, ostart, ostop):
 
 def msg_callback(data):
   
+    print("main callback")
     global THROTTLE_MAX
     global THROTTLE_MIN
     global THROTTLE_ZERO
@@ -66,9 +70,41 @@ def msg_callback(data):
     pub_steer.publish(int(round(steerPWM_cmd)))
     pub_throttle.publish(int(round(speedPWM_cmd)))
 
-def speed_callback(data):
+
+# ExpMoving Average to smooth out instant speed
+
+instant_speed_history = []
+exp_speed_history = []
+current_exp_speed = 0.0
+
+def ExpMovingAverage(values, window):
+    weights = np.exp(np.linspace(-1., 0., window))
+    weights /= weights.sum()
+    a = np.convolve(values, weights, mode='full')[:len(values)]
+    a[:window] = a[window]
+    return a
+
+
+def speed_callback(vel_msg):
     global speedometer
-    speedometer = data.data
+    vel_x = vel_msg.twist.linear.x
+    vel_y = vel_msg.twist.linear.y
+
+    speedometer = sqrt(vel_x**2 + vel_y**2)
+
+    # Filter speed estimate
+    global exp_speed_history
+    global current_exp_speed
+    instant_speed_history.append(speedometer)
+
+    if (len(instant_speed_history) > 20):
+        exp_speed_history = ExpMovingAverage(instant_speed_history, 5)
+        current_exp_speed = float(exp_speed_history[-1])
+        instant_speed_history.pop(0)
+        exp_speed_history = np.delete(exp_speed_history, 1)
+
+    pub_speed.publish(float(speedometer))
+    pub_exp_speed.publish(current_exp_speed)
 
 
 if __name__ == '__main__':
@@ -85,10 +121,10 @@ if __name__ == '__main__':
         STEERING_ZERO = float(rospy.get_param('~steering_zero', '100.0'))
 
         rospy.Subscriber('/ackermann_cmd', AckermannDriveStamped, msg_callback, queue_size=10)
-        rospy.Subscriber('/rc_car/speedometer', Float32, speed_callback, queue_size=10)
+        rospy.Subscriber('/vel', TwistStamped, speed_callback, queue_size=10)
 
-        pub_speed = rospy.Publisher('/rc_car/cur_speed', Float32, queue_size=10)
-        pub_speed_filtered = rospy.Publisher('/rc_car/speed_filtered', Float32, queue_size=10)
+        pub_speed = rospy.Publisher('/rc_car/instant_speed', Float32, queue_size=10)
+        pub_exp_speed = rospy.Publisher('/rc_car/exp_instant_speed', Float32, queue_size=10)
 
         pub_steer = rospy.Publisher('/rc_car/steerPWM', Int32, queue_size=10) 
         pub_throttle = rospy.Publisher('/rc_car/speedPWM', Int32, queue_size=10)
