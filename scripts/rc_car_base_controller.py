@@ -3,10 +3,10 @@
 import rospy
 from std_msgs.msg import Float32 
 from std_msgs.msg import Int32 
-from nav_msgs.msg import Odometry
 from ackermann_msgs.msg import AckermannDriveStamped
 from math import pow, atan2, sqrt, sin, cos, radians
 
+speedometer = 0.0
 
 def convert_steer_angle_to_servo(theta):
     '''
@@ -66,6 +66,10 @@ def msg_callback(data):
     pub_steer.publish(int(round(steerPWM_cmd)))
     pub_throttle.publish(int(round(speedPWM_cmd)))
 
+def speed_callback(data):
+    global speedometer
+    speedometer = data.data
+
 
 if __name__ == '__main__':
     try:
@@ -81,7 +85,7 @@ if __name__ == '__main__':
         STEERING_ZERO = float(rospy.get_param('~steering_zero', '100.0'))
 
         rospy.Subscriber('/ackermann_cmd', AckermannDriveStamped, msg_callback, queue_size=10)
-        rospy.Subscriber('/rc_car/speed_filtered', Float32, speed_callback, queue_size=10)
+        rospy.Subscriber('/rc_car/speedometer', Float32, speed_callback, queue_size=10)
 
         pub_speed = rospy.Publisher('/rc_car/cur_speed', Float32, queue_size=10)
         pub_speed_filtered = rospy.Publisher('/rc_car/speed_filtered', Float32, queue_size=10)
