@@ -3,8 +3,6 @@
 import rospy
 from std_msgs.msg import Float32
 from std_msgs.msg import Int32
-from nav_msgs.msg import Odometry
-from ackermann_msgs.msg import AckermannDriveStamped
 from math import pow, atan2, sqrt, sin, cos, radians
 from sensor_msgs.msg import NavSatFix
 import numpy as np
@@ -26,9 +24,7 @@ def ExpMovingAverage(values, window):
 
 
 def gps_callback(gps):
-    #callback every time the robot's gps filtered is received
-    #calculate current speed from Odom.  No encoders
-
+    #callback every time the robot's gps is received
     global last_pos_lat
     global last_pos_lon
     global last_gps_time
@@ -51,7 +47,7 @@ def gps_callback(gps):
     a = sin(dlat / 2)**2 + cos(cur_pos_lat) * cos(last_pos_lat) * sin(dlon / 2)**2
     c = 2 * atan2(sqrt(a), sqrt(1-a))
 
-    # distance in meters 
+    # distance travelled in meters 
     distance = (R * c) * 1000
 
     current_speed = distance / delta_time
@@ -75,18 +71,11 @@ def gps_callback(gps):
     pub_speed_filtered.publish(current_est_speed)
 
 
-
-    #rospy.loginfo("Exp speed estimate  %s", str(exp_speed_est))
-
 if __name__ == '__main__':
     try:
-
         rospy.init_node('rc_car_speedometer')
-        
 	rospy.Subscriber('/fix', NavSatFix, gps_callback, queue_size=10)
-
         pub_speed_filtered = rospy.Publisher('/rc_car/speed_filtered/new', Float32, queue_size=10)
-
         rospy.spin()
 
     except rospy.ROSInterruptException:
