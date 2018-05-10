@@ -120,13 +120,13 @@ def gps_callback(gps):
     last_pos_lon = cur_pos_lon
 
     pub_speed.publish(current_speed)
-    rospy.loginfo("Current speed  %s", str(current_speed))
+    #rospy.loginfo("Current speed  %s", str(current_speed))
 
     # Filter speed estimate
     global exp_speed_est
     global current_est_speed
     speed_estimates.append(current_speed)
-    rospy.loginfo(" estimate  %s", str(len(speed_estimates)))
+    #rospy.loginfo(" estimate  %s", str(len(speed_estimates)))
     
     if (len(speed_estimates) > 20):
         exp_speed_est = ExpMovingAverage(speed_estimates, 15)
@@ -136,7 +136,7 @@ def gps_callback(gps):
 
     pub_speed_filtered.publish(current_est_speed)
     
-    rospy.loginfo("Exp speed estimate  %s", str(exp_speed_est))
+    #rospy.loginfo("Exp speed estimate  %s", str(exp_speed_est))
 
 if __name__ == '__main__':
     try:
