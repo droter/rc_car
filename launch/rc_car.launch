@@ -3,7 +3,7 @@
 <node pkg="rosserial_python" type="serial_node.py" args="/dev/arduino" name="serial_node" respawn="true" />
 <!--  Razor IMU Start  -->
 
-  <arg name="razor_config_file" default="$(find razor_imu_9dof)/config/my_razor.yaml" />
+  <arg name="razor_config_file" default="$(find rc_car)/params/my_razor.yaml" />
   <node pkg="razor_imu_9dof" type="imu_node.py" name="imu_node" output="log" respawn="true" >
     <rosparam file="$(arg razor_config_file)" command="load"/>
 </node>
