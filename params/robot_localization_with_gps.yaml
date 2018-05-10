@@ -38,7 +38,7 @@ imu0_remove_gravitational_acceleration: true
 odom_frame: odom
 base_link_frame: base_link
 world_frame: odom
-map_frame: odom
+map_frame: map
 
 process_noise_covariance": [0.05, 0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
                                               0,    0.05, 0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
