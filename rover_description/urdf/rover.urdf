@@ -1,0 +1,245 @@
+<?xml version="1.0" ?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="rover">
+  <joint name="front_left_steering_joint" type="revolute">
+    <parent link="chassis"/>
+    <child link="front_left_wheel_steering_block"/>
+    <origin rpy="-1.52 0 0" xyz="1.20222  0.5 0.35515"/>
+    <axis xyz="0  -1  0"/>
+    <limit effort="10.0" lower="-0.7727" upper="0.7727" velocity="0.0"/>
+  </joint>
+  <joint name="front_right_steering_joint" type="revolute">
+    <parent link="chassis"/>
+    <child link="front_right_wheel_steering_block"/>
+    <origin rpy="1.52 0 0" xyz="1.20222 -0.5 0.35515"/>
+    <axis xyz="0  1  0"/>
+    <limit effort="10.0" lower="-0.7727" upper="0.7727" velocity="0.0"/>
+  </joint>
+  <joint name="front_left_wheel_joint" type="revolute">
+    <parent link="front_left_wheel_steering_block"/>
+    <child link="front_left_wheel"/>
+    <origin rpy="0 0 0" xyz="0 0 0.21562"/>
+    <axis xyz="0.00000000e+00 8.30000000e-04 1.00000000e+00"/>
+    <limit effort="10.0" lower="0" upper="0" velocity="0"/>
+  </joint>
+  <joint name="front_right_wheel_joint" type="revolute">
+    <parent link="front_right_wheel_steering_block"/>
+    <child link="front_right_wheel"/>
+    <origin rpy="0 0 0" xyz="0 0 0.21562"/>
+    <axis xyz="0.00000000e+00 8.30000000e-04 -1.00000000e+00"/>
+    <limit effort="0" lower="0" upper="0" velocity="0"/>
+  </joint>
+  <joint name="rear_left_wheel_joint" type="revolute">
+    <parent link="chassis"/>
+    <child link="rear_left_wheel"/>
+    <origin rpy="-1.52 0 0" xyz="-0.75 0.75 0.34697"/>
+    <axis xyz="0.00000000e+00 8.30000000e-04 1.00000000e+00"/>
+    <limit effort="0" lower="0" upper="0" velocity="0"/>
+  </joint>
+  <joint name="rear_right_wheel_joint" type="revolute">
+    <parent link="chassis"/>
+    <child link="rear_right_wheel"/>
+    <origin rpy="1.52 0 0" xyz="-0.75 -0.75 0.34697"/>
+    <axis xyz="0.00000000e+00 8.30000000e-04 -1.00000000e+00"/>
+    <limit effort="0" lower="0" upper="0" velocity="0"/>
+  </joint>
+
+  <link name="chassis">
+    <inertial>
+      <mass value="800.0"/>
+      <origin rpy="0 0 0" xyz="0.1 0 0.4"/>
+      <inertia ixx="140" ixy="0.0" ixz="0.0" iyy="550" iyz="0.0" izz="550"/>
+    </inertial>
+    <collision name="chassis_bottom">
+      <origin rpy="0 0 0" xyz="0.2 0 0.335"/>
+      <geometry>
+        <box size="1.34 1.0 0.06"/>
+      </geometry>
+    </collision>
+    <visual name="visual">
+      <origin rpy="-1.5708 0 3.1416" xyz="0.2 1.96 0.26"/>
+      <geometry>
+        <mesh filename="package://rc_car/rover_description/meshes/ErleRover_chassis.STL" scale="0.0055 0.0055 0.0055"/>
+      </geometry>
+    </visual>
+  </link>
+  <link name="front_left_wheel">
+    <inertial>
+      <mass value="20"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <inertia ixx="0.5" ixy="0.0" ixz="0.0" iyy="0.5" iyz="0.0" izz="1.0"/>
+    </inertial>
+    <collision name="collision">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.2794" radius="0.3175"/>
+      </geometry>
+    </collision>
+    <visual name="tire_visual">
+      <origin rpy="3.1416 0 0" xyz="-1.2 -0.1 1.67"/>
+      <geometry>
+      <mesh filename="package://rc_car/rover_description/meshes/ErleRover_wheel4.STL" scale="0.007 0.007 0.007"/>
+      </geometry>
+    </visual>
+  </link>
+  <link name="front_right_wheel">
+    <inertial>
+      <mass value="20"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <inertia ixx="0.5" ixy="0.0" ixz="0.0" iyy="0.5" iyz="0.0" izz="1.0"/>
+    </inertial>
+    <collision name="collision">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.2794" radius="0.3175"/>
+      </geometry>
+    </collision>
+    <visual name="visual">
+      <origin rpy="3.1416 0 0" xyz="1.25 -0.1 1.67"/>
+      <geometry>
+        <mesh filename="package://rc_car/rover_description/meshes/ErleRover_wheel2.STL" scale="0.007 0.007 0.007"/>
+      </geometry>
+    </visual>
+  </link>
+  <link name="rear_left_wheel">
+    <inertial>
+      <mass value="20"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <inertia ixx="0.5" ixy="0.0" ixz="0.0" iyy="0.5" iyz="0.0" izz="1.0"/>
+    </inertial>
+    <collision name="collision">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.2794" radius="0.3175"/>
+      </geometry>
+    </collision>
+    <visual name="visual">
+      <origin rpy="0 0 0" xyz="1.25 0.1 -3.33"/>
+      <geometry>
+        <mesh filename="package://rc_car/rover_description/meshes/ErleRover_wheel3.STL" scale="0.007 0.007 0.007"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <link name="rear_right_wheel">
+    <inertial>
+      <mass value="20"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <inertia ixx="0.5" ixy="0.0" ixz="0.0" iyy="0.5" iyz="0.0" izz="1.0"/>
+    </inertial>
+    <collision name="collision">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.2794" radius="0.3175"/>
+      </geometry>
+    </collision>
+    <visual name="visual">
+      <origin rpy="0 0 0" xyz="1.25 0.1 -3.33"/>
+      <geometry>
+        <mesh filename="package://rc_car/rover_description/meshes/ErleRover_wheel1.STL" scale="0.007 0.007 0.007"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <gazebo reference="rear_left_wheel">
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+    <fdir1>1 0 0</fdir1>
+    <kp>1e6</kp>
+  </gazebo>
+  <gazebo reference="rear_right_wheel">
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+    <fdir1>1 0 0</fdir1>
+    <kp>1e6</kp>
+  </gazebo>
+
+  <gazebo reference="front_left_wheel">
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+    <fdir1>1 0 0</fdir1>
+    <kp>1e7</kp>
+  </gazebo>
+
+  <gazebo reference="front_right_wheel">
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+    <fdir1>1 0 0</fdir1>
+    <kp>1e7</kp>
+  </gazebo>
+
+  <link name="front_right_wheel_steering_block">
+    <inertial>
+      <mass value="1"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+    </inertial>
+    <collision name="collision">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.01" radius="0.05"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="front_left_wheel_steering_block">
+    <inertial>
+      <mass value="1"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+    </inertial>
+    <collision name="collision">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.01" radius="0.05"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!--*********************
+  *************************
+  *********PLUGINS*********
+  ************************* 
+  **********************-->
+
+  <xacro:property name="namespace" value="rover" />
+  <!-- Specify reference parameters for GNSS receiver. -->
+  <!-- xacro:include filename="$(find rc_car)/rover_description/urdf/gps_home_location.xacro" -->
+  <!-- in degrees, 0 so North is towards positive X values, and East is towards negative Y values -->
+  <xacro:property name="referenceHeading" value="0" />
+  
+  <xacro:property name="M_PI" value="3.1415926535897931" />
+  
+
+  <!-- Front facing camera -->
+  <xacro:include filename="$(find rc_car)/rover_description/urdf/sensors/generic_camera.urdf.xacro" />
+  <xacro:generic_camera
+    name="${namespace}/front"
+    parent="chassis"
+    ros_topic="image_front_raw"
+    cam_info_topic="camera_front_info"
+    update_rate="60"
+    res_x="640"
+    res_y="480"
+    image_format="R8G8B8"
+    hfov="110"
+    framename="${namespace}_frontcam">
+    <origin xyz="0.8 0 1.2" rpy="0 0 0"/>
+  </xacro:generic_camera>
+
+<xacro:include filename="$(find rc_car)/rover_description/urdf/sensors/lidar_sensor.urdf.xacro" />
+  <xacro:lidar_sensor
+    name="sonar2"
+    parent="chassis"
+    ros_topic="sonar_front"
+    update_rate="10"
+    min_range="0.06"
+    max_range="20.0"
+    field_of_view_horizontal="${270*M_PI/180}"
+    field_of_view_vertical="${1*M_PI/180}"
+    ray_count_horizontal="542"
+    ray_count_vertical="1"
+    sensor_mesh="lidar_lite_v2_withRay/meshes/lidar_lite_v2_withRay.dae">
+    <origin xyz="0.5 0 0.8" rpy="0 0 0"/>
+  </xacro:lidar_sensor>
+
+
+</robot>

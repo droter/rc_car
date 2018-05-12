@@ -26,7 +26,7 @@ magn_ellipsoid_center: [512.426, -833.634, -1488.52]
 magn_ellipsoid_transform: [[0.981277, -0.0165603, 0.0265753], [-0.0165603, 0.978185, 0.0319624], [0.0265753, 0.0319624, 0.952301]]
 
 # AHRS to robot calibration
-imu_yaw_calibration: 0.0
+imu_yaw_calibration: 1.5708
 
 ### gyroscope
 gyro_average_offset_x: 0.0
