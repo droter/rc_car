@@ -75,7 +75,7 @@ def gps_callback(gps):
 if __name__ == '__main__':
     try:
         rospy.init_node('rc_car_speedometer')
-	rospy.Subscriber('/fix', NavSatFix, gps_callback, queue_size=10)
+	rospy.Subscriber('/gps/filtered', NavSatFix, gps_callback, queue_size=10)
         pub_speed_filtered = rospy.Publisher('/rc_car/speedometer', Float32, queue_size=10)
         rospy.spin()
 

@@ -1,33 +1,19 @@
 <launch>
 
+<!--  rc_car arduino controller start  -->
 <node pkg="rosserial_python" type="serial_node.py" args="/dev/arduino" name="serial_node" respawn="true" />
+
 <!--  Razor IMU Start  -->
-
-  <arg name="razor_config_file" default="$(find rc_car)/params/my_razor.yaml" />
-  <node pkg="razor_imu_9dof" type="imu_node.py" name="imu_node" output="log" respawn="true" >
-    <rosparam file="$(arg razor_config_file)" command="load"/>
+<arg name="razor_config_file" default="$(find rc_car)/params/my_razor.yaml" />
+<node pkg="razor_imu_9dof" type="imu_node.py" name="imu_node" output="log" respawn="true" >
+   <rosparam file="$(arg razor_config_file)" command="load"/>
 </node>
-
-
 
 <!--  GPS Start -->
 <node pkg="nmea_navsat_driver" type="nmea_serial_driver" name="nmea_navsat_node" respawn="true" >
-  <param name="port" value="/dev/gps" />
-  <param name="baud" value="4800" />
+   <param name="port" value="/dev/gps" />
+   <param name="baud" value="4800" />
 </node>
-
-<!--  Transforms  
-These are the measurements in meters for your sensors (x y z yaw pitch roll) x forward y left z up
--->
-        <node pkg="tf" type="static_transform_publisher"
-                name="footprint_transform"
-                args="0 0 -0.1 0 0 0 base_link footprint 10" />
-        <node pkg="tf" type="static_transform_publisher"
-                name="gps_transform"
-                args="2.286 0 0.8128 0 0 0 base_link gps 10" />
-        <node pkg="tf" type="static_transform_publisher"
-                name="imu_transform"
-                args="2.286 0 0.8128 0 0 0 base_link base_imu_link 10" />
 
 <include file="$(find rc_car)/launch/localization.launch"/>
 <include file="$(find rc_car)/launch/rc_car_base_controller.launch" />
