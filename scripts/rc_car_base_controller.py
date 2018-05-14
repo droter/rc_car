@@ -11,20 +11,21 @@ import numpy as np
 
 speedometer = 0.0
 
-def convert_steer_angle_to_servo(theta):
+
+def scale_angle_to_servo(angle):
     '''
     Maps steer angle setpoint to rc car steer servo position
     No angle sensor feedback
     Reads servo Min, Max and Center from params.
     Input range from -60 to 60 degrees.
     '''
-    steer_setpoint = theta * 100
-    steerServoPWM = valmap(steer_setpoint, -100, 100, STEERING_MIN, STEERING_MAX)
+    angle_setpoint = angle * 100
+    steerServoPWM = valmap(angle_setpoint, -100, 100, STEERING_MIN, STEERING_MAX)
 
     return steerServoPWM
 
 
-def convert_speed_to_servo(speed):
+def scale_speed_to_servo(speed):
     '''
     Maps speed to rc_car esc.  The 'max speed' is set to 1.  Think about
     it like percent instead of meters per second.  The THROTTLE_MIN  will
@@ -43,17 +44,12 @@ def convert_speed_to_servo(speed):
     return speedServoPWM
 
 
-# function to map range of input to range of servo motor
-# Input -60 to 60 degrees
-# Output read from param server
+# function to scale range of input to range of servo motor min/max
 def valmap(value, istart, istop, ostart, ostop):
-
     return ostart + (ostop - ostart) * ((value - istart) / (istop - istart))
 
 
 def msg_callback(data):
-  
-    print("main callback")
     global THROTTLE_MAX
     global THROTTLE_MIN
     global THROTTLE_ZERO
@@ -61,18 +57,17 @@ def msg_callback(data):
     global STEERING_MIN
     global STEERING_ZERO
 
-    theta = data.drive.steering_angle
-    steerPWM_cmd = convert_steer_angle_to_servo(theta)
+    angle_cmd= data.drive.steering_angle
+    steerPWM_cmd = scale_angle_to_servo(angle_cmd)
 
-    speed = data.drive.speed
-    speedPWM_cmd = convert_speed_to_servo(speed)
+    speed_cmd = data.drive.speed
+    speedPWM_cmd = scale_speed_to_servo(speed_cmd)
 
     pub_steer.publish(int(round(steerPWM_cmd)))
     pub_throttle.publish(int(round(speedPWM_cmd)))
 
 
 # ExpMoving Average to smooth out instant speed
-
 instant_speed_history = []
 exp_speed_history = []
 current_exp_speed = 0.0
@@ -109,7 +104,6 @@ def speed_callback(vel_msg):
 
 if __name__ == '__main__':
     try:
-
         rospy.init_node('rc_car_base_controller')
 
         THROTTLE_MAX = float(rospy.get_param('~throttle_max', '120.0'))
@@ -129,9 +123,7 @@ if __name__ == '__main__':
         pub_steer = rospy.Publisher('/rc_car/steerPWM', Int32, queue_size=10) 
         pub_throttle = rospy.Publisher('/rc_car/speedPWM', Int32, queue_size=10)
 
-        rospy.loginfo("Node 'rc_car_base_controller' started. \nListening to 'Steer_max',  param value:  %s " % STEERING_MAX ) 
-
-
+        # rospy.loginfo("Node started. \nListening to 'Steer_max',  param value:  %s " % STEERING_MAX ) 
         rospy.spin()
 
     except rospy.ROSInterruptException:
